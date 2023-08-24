@@ -2,6 +2,7 @@ const Item = require('../models/videoModel');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs').promises;
  const path =require('path')
+ const os = require('os'); // Import the 'os' module
 
 
  const uploadVideo = async (req, res) => {
@@ -11,13 +12,14 @@ const fs = require('fs').promises;
   
     try {
     //   await fs.mkdir('/path/', { recursive: true });
-  
-      const thumbnailPath = path.join('/path/to/temp', 'thumbnail.jpg');
+    const tempDir = os.tmpdir(); // Use the OS's temporary directory
+
+      const thumbnailPath = path.join(tempDir, 'thumbnail.jpg');
       await fs.writeFile(thumbnailPath, thumbnailFile.buffer);
   
       // Determine video file extension dynamically
       const videoExtension = path.extname(videoFile.originalname);
-      const videoPath = path.join('/path/to/temp', `video${videoExtension}`);
+      const videoPath = path.join(tempDir, `video${videoExtension}`);
       await fs.writeFile(videoPath, videoFile.buffer);
   
       
