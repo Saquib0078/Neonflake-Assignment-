@@ -10,7 +10,7 @@ const fs = require('fs').promises;
     const videoFile = req.files['video'][0];
   
     try {
-      await fs.mkdir('/path/to/temp', { recursive: true });
+    //   await fs.mkdir('/path/', { recursive: true });
   
       const thumbnailPath = path.join('/path/to/temp', 'thumbnail.jpg');
       await fs.writeFile(thumbnailPath, thumbnailFile.buffer);
