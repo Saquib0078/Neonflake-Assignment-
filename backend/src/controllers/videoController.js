@@ -20,6 +20,7 @@ const fs = require('fs').promises;
       const videoPath = path.join('/path/to/temp', `video${videoExtension}`);
       await fs.writeFile(videoPath, videoFile.buffer);
   
+      
       const thumbnailResult = await cloudinary.uploader.upload(thumbnailPath, { folder: 'thumbnails' });
       const videoResult = await cloudinary.uploader.upload(videoPath, { resource_type: "video"});
       console.log(videoResult);
@@ -28,7 +29,10 @@ const fs = require('fs').promises;
   
       await fs.unlink(thumbnailPath);
       await fs.unlink(videoPath);
-  
+      await Promise.all([
+        cloudinary.uploader.destroy(thumbnailResult.public_id),
+        cloudinary.uploader.destroy(videoResult.public_id),
+      ]);
       const newItem= {
         title,
         description,
