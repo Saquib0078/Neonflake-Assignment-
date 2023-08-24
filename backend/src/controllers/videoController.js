@@ -12,9 +12,9 @@ const fs = require('fs').promises;
   
     try {
     //   await fs.mkdir('/path/', { recursive: true });
-    const tempDir = os.tmpdir(); // Use the OS's temporary directory
-
-      const thumbnailPath = path.join(tempDir, 'thumbnail.jpg');
+    const tempDir = os.tmpdir();
+      const imageExt=path.extname(thumbnailFile.originalname);
+      const thumbnailPath = path.join(tempDir, `img${imageExt}`);
       await fs.writeFile(thumbnailPath, thumbnailFile.buffer);
   
       // Determine video file extension dynamically
@@ -23,18 +23,17 @@ const fs = require('fs').promises;
       await fs.writeFile(videoPath, videoFile.buffer);
   
       
-      const thumbnailResult = await cloudinary.uploader.upload(thumbnailPath, { folder: 'thumbnails' });
+      const thumbnailResult = await cloudinary.uploader.upload(thumbnailPath, { resource_type: 'image', folder: 'thumbnails', });
       const videoResult = await cloudinary.uploader.upload(videoPath, { resource_type: "video"});
-      console.log(videoResult);
   
-    
+    console.log(thumbnailResult)
   
       await fs.unlink(thumbnailPath);
       await fs.unlink(videoPath);
-      await Promise.all([
-        cloudinary.uploader.destroy(thumbnailResult.public_id),
-        cloudinary.uploader.destroy(videoResult.public_id),
-      ]);
+    //   await Promise.all([
+    //     cloudinary.uploader.destroy(thumbnailResult.public_id),
+    //     cloudinary.uploader.destroy(videoResult.public_id),
+    //   ]);
       const newItem= {
         title,
         description,
